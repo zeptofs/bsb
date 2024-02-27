@@ -3,6 +3,7 @@ name: Update bank/branch data
 on:
   schedule:
     - cron: "0 1 * * *" # 1am UTC
+  workflow_dispatch:
 jobs:
   update_bank_branch_data:
     runs-on: ubuntu-latest
@@ -18,7 +19,7 @@ jobs:
           bundle install
           bundle exec rake bsb:update_bank_branch_data
       - name: Verify changed files
-        uses: tj-actions/verify-changed-files@v12
+        uses: tj-actions/verify-changed-files@v18
         id: verify_changed_files
         with:
           files: |
@@ -26,7 +27,7 @@ jobs:
             config/bsb_db.json
       - name: Create pull request
         if: steps.verify_changed_files.outputs.files_changed == 'true'
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v6
         with:
           title: "Update bank/branch data"
           branch: "update-bank-branch-data"
